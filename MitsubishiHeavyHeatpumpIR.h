@@ -111,10 +111,65 @@
 //ZMP model does not support horizontal swing
 #define MITSUBISHI_HEAVY_ZMP_HS_STOP       0xCC
 
+#define MITSUBISHI_HEAVY_ZS_POWER_ON              (1 << 3)                //Bit 3 of byte 6
+#define MITSUBISHI_HEAVY_ZS_3DAUTO_ON             ((1 << 4) | (1 << 1))   //Bits 1 and 4 of byte 12
+#define MITSUBISHI_HEAVY_ZS_SILENT_ON             (1 << 7)                //Bit 7 of byte 16
+#define MITSUBISHI_HEAVY_ZS_ALLERGEN_CLEAR_ON     (1 << 6)                //Bit 6 of byte 6
+#define MITSUBISHI_HEAVY_ZS_NIGHT_SETBACK_ON      (1 << 6)                //Bit 6 of byte 16
+#define MITSUBISHI_HEAVY_ZS_SELF_CLEAN_ON         (1 << 2)                //Bit 2 of byte 18
+
+#define MITSUBISHI_HEAVY_ZS_MODE_AUTO             0 // Operating mode (bits 0-2 of byte 6)
+#define MITSUBISHI_HEAVY_ZS_MODE_COOL             1
+#define MITSUBISHI_HEAVY_ZS_MODE_DRY              2
+#define MITSUBISHI_HEAVY_ZS_MODE_FAN              3
+#define MITSUBISHI_HEAVY_ZS_MODE_HEAT             4
+
+#define MITSUBISHI_HEAVY_ZS_FAN_AUTO              0 // Fan speed (bits 0-3 ofbyte 10)
+#define MITSUBISHI_HEAVY_ZS_FAN1                  1
+#define MITSUBISHI_HEAVY_ZS_FAN2                  2
+#define MITSUBISHI_HEAVY_ZS_FAN3                  3
+#define MITSUBISHI_HEAVY_ZS_FAN4                  4
+#define MITSUBISHI_HEAVY_ZS_ECO                   6
+#define MITSUBISHI_HEAVY_ZS_HIPOWER               8
+
+#define MITSUBISHI_HEAVY_ZS_VS_SWING              (0 << 5) // Vertical swing (bits 5-7 of bytes 12, 14)
+#define MITSUBISHI_HEAVY_ZS_VS_UP                 (1 << 5)
+#define MITSUBISHI_HEAVY_ZS_VS_MUP                (2 << 5)
+#define MITSUBISHI_HEAVY_ZS_VS_MIDDLE             (3 << 5)
+#define MITSUBISHI_HEAVY_ZS_VS_MDOWN              (4 << 5)
+#define MITSUBISHI_HEAVY_ZS_VS_DOWN               (5 << 5)
+#define MITSUBISHI_HEAVY_ZS_VS_STOP               (6 << 5)
+
+#define MITSUBISHI_HEAVY_ZS_HS_SWING              0 // Horizontal swing (bits 0-3 of byte 14)
+#define MITSUBISHI_HEAVY_ZS_HS_LEFT               1
+#define MITSUBISHI_HEAVY_ZS_HS_MLEFT              2
+#define MITSUBISHI_HEAVY_ZS_HS_MIDDLE             3
+#define MITSUBISHI_HEAVY_ZS_HS_MRIGHT             4
+#define MITSUBISHI_HEAVY_ZS_HS_RIGHT              5
+#define MITSUBISHI_HEAVY_ZS_HS_RIGHTLEFT          6
+#define MITSUBISHI_HEAVY_ZS_HS_LEFTRIGHT          7
+#define MITSUBISHI_HEAVY_ZS_HS_STOP               8
+
+#define MITSUBISHI_HEAVY_ZS_FAN_HEAT_OFF_NORMAL   (0 << 1) // Fan mode on reached temperature in heating mode (bits 1-3 of byte 18)
+#define MITSUBISHI_HEAVY_ZS_FAN_HEAT_OFF_CHIMNEY  (1 << 1)
+#define MITSUBISHI_HEAVY_ZS_FAN_HEAT_OFF_INTERVAL (4 << 1)
+#define MITSUBISHI_HEAVY_ZS_FAN_HEAT_OFF_STOP     (5 << 1)
+
+#define MITSUBISHI_HEAVY_ZS_LED_OFF               (1 << 0)                //Bit 0 of byte 18
+#define MITSUBISHI_HEAVY_ZS_LED_50PERCENT         (1 << 4)                //Bit 4 of byte 14
+
+#define MITSUBISHI_HEAVY_ZS_WLAN_RESET            (1 << 4)                //Bit 4 of byte 18
+#define MITSUBISHI_HEAVY_ZS_WLAN_ON               (1 << 7)                //Bit 7 of byte 8
+#define MITSUBISHI_HEAVY_ZS_WLAN_OFF              (1 << 5)                //Bit 5 of byte 10
+#define MITSUBISHI_HEAVY_ZS_WLAN_MODE_SL          (0 << 6)                //Bits 6-7 of byte 10
+#define MITSUBISHI_HEAVY_ZS_WLAN_MODE_WPS         (1 << 6)
+#define MITSUBISHI_HEAVY_ZS_WLAN_MODE_AP          (2 << 6)
+
 // MitsubishiHeavy model codes
-#define MITSUBISHIHEAVY_ZJ 0
-#define MITSUBISHIHEAVY_ZM 1
+#define MITSUBISHIHEAVY_ZJ  0
+#define MITSUBISHIHEAVY_ZM  1
 #define MITSUBISHIHEAVY_ZMP 2
+#define MITSUBISHIHEAVY_ZS  3
 
 
 class MitsubishiHeavyHeatpumpIR : public HeatpumpIR
@@ -156,6 +211,16 @@ class MitsubishiHeavyZMPHeatpumpIR : public MitsubishiHeavyHeatpumpIR
 
   private:
     void sendMitsubishiHeavy(IRSender& IR, uint8_t powerMode, uint8_t operatingMode, uint8_t fanSpeed, uint8_t temperature, uint8_t swingV, uint8_t swingH, uint8_t cleanMode);
+};
+
+class MitsubishiHeavyZSHeatpumpIR : public MitsubishiHeavyHeatpumpIR
+{
+  public:
+    MitsubishiHeavyZSHeatpumpIR();
+    void send(IRSender& IR, uint8_t powerModeCmd, uint8_t operatingModeCmd, uint8_t fanSpeedCmd, uint8_t temperatureCmd, uint8_t swingVCmd, uint8_t swingHCmd, bool cleanModeCmd, bool silentModeCmd, bool _3DAutoCmd);
+
+  private:
+    void sendMitsubishiHeavy(IRSender& IR, uint8_t powerMode, uint8_t operatingMode, uint8_t fanSpeed, uint8_t temperature, uint8_t swingV, uint8_t swingH, uint8_t allergenClearMode, uint8_t selfCleanMode, uint8_t silentMode, uint8_t _3DAutoMode, uint8_t nightSetback, uint8_t heatReachedTempFanMode, uint8_t led50Percent, uint8_t ledOff, uint8_t wlanMode, uint8_t wlanOn, uint8_t wlanReset);
 };
 
 #endif
