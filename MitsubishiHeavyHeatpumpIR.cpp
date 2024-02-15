@@ -458,7 +458,7 @@ void MitsubishiHeavyZSHeatpumpIR::send(IRSender& IR, uint8_t powerModeCmd, uint8
 {
   // Sensible defaults for the heat pump mode
 
-  uint8_t powerMode                  = 0;
+  uint8_t powerMode               = 0;
   uint8_t operatingMode           = MITSUBISHI_HEAVY_ZS_MODE_AUTO;
   uint8_t fanSpeed                = MITSUBISHI_HEAVY_ZS_FAN_AUTO;
   uint8_t temperature             = 23;
@@ -481,21 +481,22 @@ void MitsubishiHeavyZSHeatpumpIR::send(IRSender& IR, uint8_t powerModeCmd, uint8
     powerMode = MITSUBISHI_HEAVY_ZS_POWER_ON;
   }
 
-  if (cleanModeCmd && powerModeCmd == POWER_OFF && (operatingModeCmd == MODE_AUTO || operatingModeCmd == MODE_COOL || operatingModeCmd == MODE_DRY))
-  {
-    powerMode = MITSUBISHI_HEAVY_ZS_POWER_ON;
-    allergenClearMode = MITSUBISHI_HEAVY_ZS_ALLERGEN_CLEAR_ON;
-  }
+  //Ignore this for now
+  // if (cleanModeCmd && powerModeCmd == POWER_OFF && (operatingModeCmd == MODE_AUTO || operatingModeCmd == MODE_COOL || operatingModeCmd == MODE_DRY))
+  // {
+  //   powerMode = MITSUBISHI_HEAVY_ZS_POWER_ON;
+  //   allergenClearMode = MITSUBISHI_HEAVY_ZS_ALLERGEN_CLEAR_ON;
+  // }
 
-  if (silentModeCmd && !(operatingModeCmd == MODE_DRY || operatingModeCmd == MODE_FAN))
-  {
-    silentMode = MITSUBISHI_HEAVY_ZS_SILENT_ON;
-  }
+  // if (silentModeCmd && !(operatingModeCmd == MODE_DRY || operatingModeCmd == MODE_FAN))
+  // {
+  //   silentMode = MITSUBISHI_HEAVY_ZS_SILENT_ON;
+  // }
 
-  if (_3DAutoCmd && !(operatingModeCmd == MODE_DRY || operatingModeCmd == MODE_FAN))
-  {
-    _3DAuto = MITSUBISHI_HEAVY_ZS_3DAUTO_ON;
-  }
+  // if (_3DAutoCmd && !(operatingModeCmd == MODE_DRY || operatingModeCmd == MODE_FAN))
+  // {
+  //   _3DAuto = MITSUBISHI_HEAVY_ZS_3DAUTO_ON;
+  // }
 
   switch (operatingModeCmd)
   {
